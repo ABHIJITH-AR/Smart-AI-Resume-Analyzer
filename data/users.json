@@ -1,18 +1,18 @@
 [
   {
-    "id": "u-seeded-user-2026",
-    "name": "Abhijith",
-    "email": "abhijith90711@gmail.com",
-    "password": "$2b$10$czylTaUtYC9k91ejLsv/C.7qqYbXh1811wOqLmDlZOmLuRP3LZtli",
-    "avatar": "",
-    "createdAt": "2026-06-06T02:26:24.244Z"
-  },
-  {
-    "id": "u-1780714085446-605",
+    "id": "u-1780721727123-668",
     "name": "Abhijith",
     "email": "arabhijith42@gmail.com",
-    "password": "$2b$10$eEIvPy91JzAdDIrrfXNaIed9lg/8AKaEorKA39a5hMlXr3UbI0oDy",
+    "password": "$2b$10$YAi2kFuVVyPoxDKdW3fia.Bs9ykPAQ8Ti1oCb8X6sOthJUtY9VUC6",
     "avatar": "",
-    "createdAt": "2026-06-06T02:48:05.446Z"
+    "createdAt": "2026-06-06T04:55:27.123Z"
+  },
+  {
+    "id": "u-1780721802237-522",
+    "name": "Abhijith",
+    "email": "abhijith98711@gmail.com",
+    "password": "$2b$10$bYvEzecGLTPv84d8luVc2esiMA72sk.8KKYz/1JcmRBVh6XvpvPjS",
+    "avatar": "",
+    "createdAt": "2026-06-06T04:56:42.237Z"
   }
 ]

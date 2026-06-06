@@ -9,10 +9,10 @@ interface RegisterProps {
 }
 
 export default function RegisterView({ onNavigateToLogin, addToast }: RegisterProps) {
-  const [name, setName] = useState("Abhijith");
-  const [email, setEmail] = useState("abhijith90711@gmail.com");
-  const [password, setPassword] = useState("password123");
-  const [confirmPassword, setConfirmPassword] = useState("password123");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 

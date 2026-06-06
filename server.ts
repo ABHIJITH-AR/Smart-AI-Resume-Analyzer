@@ -78,6 +78,10 @@ const authenticateToken = (req: any, res: any, next: any) => {
 app.post("/api/auth/register", (req, res) => {
   try {
     const { name, email, password } = req.body;
+    console.log("--- REGISTER ATTEMPT ---");
+    console.log("Input Name:", name);
+    console.log("Input Email:", email);
+    console.log("Input Password:", password);
 
     if (!name || !email || !password) {
       return res.status(400).json({ error: "All fields are required" });
@@ -88,12 +92,14 @@ app.post("/api/auth/register", (req, res) => {
 
     const existingUser = users.find((u) => u.email.toLowerCase() === normalizedEmail);
     if (existingUser) {
+      console.log("Register failed: Email already registered:", normalizedEmail);
       return res.status(400).json({ error: "Email already registered" });
     }
 
     // Hash password with bcryptjs
     const salt = bcryptjs.genSaltSync(10);
     const hashedPassword = bcryptjs.hashSync(password, salt);
+    console.log("Hashed Password generated:", hashedPassword);
 
     const newUser = {
       id: "u-" + Date.now() + "-" + Math.floor(Math.random() * 1000),
@@ -106,6 +112,7 @@ app.post("/api/auth/register", (req, res) => {
 
     users.push(newUser);
     writeUsers(users);
+    console.log("Successfully registered new user and saved to database.");
 
     return res.status(201).json({
       message: "Registration successful",
@@ -121,23 +128,32 @@ app.post("/api/auth/register", (req, res) => {
 app.post("/api/auth/login", (req, res) => {
   try {
     const { email, password, rememberMe } = req.body;
+    console.log("--- LOGIN ATTEMPT ---");
+    console.log("Input Email:", email);
+    console.log("Input Password:", password);
 
     if (!email || !password) {
       return res.status(400).json({ error: "Email and password are required" });
     }
 
     const users = readUsers();
+    console.log("Existing Users database size:", users.length);
+    console.log("Existing User Emails:", users.map(u => u.email));
+
     const normalizedEmail = email.toLowerCase().trim();
 
     const user = users.find((u) => u.email.toLowerCase() === normalizedEmail);
     if (!user) {
+      console.log("Login failed: Account Not Found for email:", normalizedEmail);
       // Return specific error to trigger "Account Not Found Popup" on frontend
       return res.status(404).json({ error: "Account Not Found" });
     }
 
     // Verify Password
     const passwordMatch = bcryptjs.compareSync(password, user.password);
+    console.log("Password Match Result:", passwordMatch);
     if (!passwordMatch) {
+      console.log("Login failed: Password mismatch for email:", normalizedEmail);
       // Return specific error to trigger "Wrong Password Popup" on frontend
       return res.status(401).json({ error: "Invalid Password" });
     }
@@ -146,6 +162,8 @@ app.post("/api/auth/login", (req, res) => {
     const payload = { id: user.id, email: user.email, name: user.name };
     const expiresSeconds = rememberMe ? 30 * 24 * 60 * 60 : 24 * 60 * 60; // 30 days vs 1 day
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: expiresSeconds });
+
+    console.log("Login Successful for user:", normalizedEmail);
 
     return res.status(200).json({
       message: "Login Successful",

@@ -17,26 +17,7 @@ function initDB() {
     fs.writeFileSync(ANALYSES_FILE, JSON.stringify([], null, 2), "utf8");
   }
 
-  // Seed Abhijith under abhijith90711@gmail.com with password123 if not already present
-  try {
-    const rawUsers = fs.readFileSync(USERS_FILE, "utf8");
-    const usersList = JSON.parse(rawUsers);
-    const hasUser = usersList.some((u: any) => u.email.toLowerCase() === "abhijith90711@gmail.com");
-    if (!hasUser) {
-      usersList.push({
-        id: "u-seeded-user-2026",
-        name: "Abhijith",
-        email: "abhijith90711@gmail.com",
-        password: "$2b$10$qpN1hHIKK9wZIUDKrNWmteiM27nRfXdMHUxFfbpRXlouMV1QTIbSa", // bcrypt hash for "password123"
-        avatar: "",
-        createdAt: new Date().toISOString()
-      });
-      fs.writeFileSync(USERS_FILE, JSON.stringify(usersList, null, 2), "utf8");
-    }
-  } catch (e) {
-    console.error("Failed to seed initial user:", e);
-  }
-
+  // Skip automatic user seeding to allow the user to register fresh with their own details and preferred passwords.
   // Ensure uploads directory exists too
   const uploadsDir = path.join(process.cwd(), "uploads");
   if (!fs.existsSync(uploadsDir)) {

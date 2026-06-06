@@ -18,7 +18,11 @@ export default function LoginView({ onLoginSuccess, onNavigateToRegister, addToa
 
   // Load remembered email
   useEffect(() => {
-    // Keep inputs completely blank on initial mount for a fresh login experience
+    const savedEmail = localStorage.getItem("remembered_email");
+    if (savedEmail) {
+      setEmail(savedEmail);
+      setRememberMe(true);
+    }
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
