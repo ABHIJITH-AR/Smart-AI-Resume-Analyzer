@@ -16,13 +16,9 @@ export default function LoginView({ onLoginSuccess, onNavigateToRegister, addToa
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Load remembered email
+  // Kept completely blank on mount for a fresh, secure login experience as requested
   useEffect(() => {
-    const savedEmail = localStorage.getItem("remembered_email");
-    if (savedEmail) {
-      setEmail(savedEmail);
-      setRememberMe(true);
-    }
+    // No automatic email loading on open
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -131,7 +127,7 @@ export default function LoginView({ onLoginSuccess, onNavigateToRegister, addToa
             <p className="text-[#94A3B8] text-xs mt-1">Please sign in to access your dashboard</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5" id="form-login">
+          <form onSubmit={handleSubmit} className="space-y-5" id="form-login" autoComplete="off">
             <div>
               <label htmlFor="email" className="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-2">
                 Email
@@ -141,8 +137,10 @@ export default function LoginView({ onLoginSuccess, onNavigateToRegister, addToa
                   <Mail className="h-5 w-5 text-slate-500" />
                 </div>
                 <input
-                  type="email"
+                  type="text"
                   id="email"
+                  name="email-login-field-unique"
+                  autoComplete="new-password"
                   className="w-full bg-[#111827]/70 border border-slate-800 rounded-xl pl-10 pr-4 py-3 text-[#F8FAFC] text-sm transition-all focus:border-[#4169E1] focus:ring-2 focus:ring-[#4169E1]/20 placeholder:text-slate-600"
                   placeholder="your.email@example.com"
                   value={email}
@@ -173,6 +171,8 @@ export default function LoginView({ onLoginSuccess, onNavigateToRegister, addToa
                 <input
                   type={showPassword ? "text" : "password"}
                   id="password"
+                  name="password-login-field-unique"
+                  autoComplete="new-password"
                   className="w-full bg-[#111827]/70 border border-slate-800 rounded-xl pl-10 pr-10 py-3 text-[#F8FAFC] text-sm transition-all focus:border-[#4169E1] focus:ring-2 focus:ring-[#4169E1]/20 placeholder:text-slate-600"
                   placeholder="••••••••••••"
                   value={password}
