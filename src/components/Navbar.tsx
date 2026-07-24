@@ -64,8 +64,8 @@ export const Navbar: React.FC<NavbarProps> = ({
     setProfileError(null);
 
     const emailToSave = editEmail.trim() || user.email;
-    if (!emailToSave.toLowerCase().endsWith('@gmail.com')) {
-      setProfileError('Email address must end with @gmail.com!');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailToSave.trim())) {
+      setProfileError('Please enter a valid email address!');
       return;
     }
 

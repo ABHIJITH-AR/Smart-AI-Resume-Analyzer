@@ -23,8 +23,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
     setLoading(true);
 
     try {
-      if (!email.toLowerCase().trim().endsWith('@gmail.com')) {
-        setErrorMsg('Please enter a valid Gmail address ending with @gmail.com');
+      if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+        setErrorMsg('Please enter a valid email address (e.g. user@example.com)');
         setLoading(false);
         return;
       }
@@ -148,7 +148,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="user@gmail.com"
+                placeholder="name@example.com"
                 className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-700 bg-slate-800/80 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
               />
             </div>

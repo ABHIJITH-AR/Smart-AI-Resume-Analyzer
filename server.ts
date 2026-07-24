@@ -275,8 +275,22 @@ app.post("/api/auth/login", async (req, res) => {
     return;
   }
   const normalizedEmail = email.toLowerCase().trim();
+  const normalizedPassword = password ? String(password).trim() : "";
 
-  let existing = registeredUsersStore.find((u) => u.email === normalizedEmail);
+  // Refresh registered users from disk in case updated on another process/instance
+  const diskUsers = loadRegisteredUsersFromDisk();
+  for (const du of diskUsers) {
+    const duNormalizedEmail = du.email.toLowerCase().trim();
+    const existingInStore = registeredUsersStore.find((u) => u.email.toLowerCase().trim() === duNormalizedEmail);
+    if (!existingInStore) {
+      registeredUsersStore.push({ ...du, email: duNormalizedEmail });
+    } else {
+      if (du.password) existingInStore.password = du.password;
+      if (du.name) existingInStore.name = du.name;
+    }
+  }
+
+  let existing = registeredUsersStore.find((u) => u.email.toLowerCase().trim() === normalizedEmail);
 
   if (!existing && mongoose.connection.readyState === 1) {
     try {
@@ -285,7 +299,7 @@ app.post("/api/auth/login", async (req, res) => {
         existing = {
           id: dbUser.id,
           name: dbUser.name,
-          email: dbUser.email,
+          email: dbUser.email.toLowerCase().trim(),
           password: dbUser.password,
         };
         registeredUsersStore.push(existing);
@@ -297,11 +311,11 @@ app.post("/api/auth/login", async (req, res) => {
   }
 
   if (!existing) {
-    res.status(401).json({ error: "Account not found. Please register first before signing in!" });
+    res.status(401).json({ error: "Account not found for this email. Please register first on the Register tab!" });
     return;
   }
-  if (password && existing.password && existing.password !== password) {
-    res.status(401).json({ error: "Incorrect password. Please try again." });
+  if (normalizedPassword && existing.password && String(existing.password).trim() !== normalizedPassword) {
+    res.status(401).json({ error: "Incorrect password. Please check your password and try again." });
     return;
   }
   res.json({

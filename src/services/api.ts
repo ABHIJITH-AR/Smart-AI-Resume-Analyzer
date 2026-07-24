@@ -338,14 +338,35 @@ export async function updateUserProfileApi(oldEmail: string, updatedUser: User):
   return updatedUser;
 }
 
+export async function syncLocalUsersToServer(): Promise<void> {
+  try {
+    const localUsers = getRegisteredUsers();
+    if (!localUsers || localUsers.length === 0) return;
+
+    for (const lu of localUsers) {
+      if (!lu.email) continue;
+      await fetch(`${API_BASE}/api/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: lu.name || 'User', email: lu.email.toLowerCase().trim(), password: lu.password }),
+      }).catch(() => {});
+    }
+  } catch {
+    // Ignore silent sync errors
+  }
+}
+
 export async function loginUserApi(email: string, password?: string): Promise<User> {
   const normalizedEmail = email.toLowerCase().trim();
 
-  if (!normalizedEmail.endsWith('@gmail.com') || !normalizedEmail.includes('@')) {
-    throw new Error('Invalid email address. Email must end with @gmail.com!');
+  if (!normalizedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+    throw new Error('Please enter a valid email address (e.g. name@example.com)');
   }
   
-  // Try server endpoint first
+  // Try syncing any pending local accounts to central server first
+  await syncLocalUsersToServer();
+
+  // Try server endpoint
   try {
     const res = await fetch(`${API_BASE}/api/auth/login`, {
       method: 'POST',
@@ -364,17 +385,17 @@ export async function loginUserApi(email: string, password?: string): Promise<Us
       }
     }
   } catch (err: any) {
-    if (err.message && (err.message.includes('Account not found') || err.message.includes('Incorrect password') || err.message.includes('Invalid email'))) {
+    if (err.message && (err.message.includes('Account not found') || err.message.includes('Incorrect password') || err.message.includes('Please register'))) {
       throw err;
     }
   }
 
-  // Fallback for local user state
+  // Fallback for local user state if offline
   const localUsers = getRegisteredUsers();
-  const found = localUsers.find((u) => u.email.toLowerCase() === normalizedEmail);
+  const found = localUsers.find((u) => u.email.toLowerCase().trim() === normalizedEmail);
 
   if (found) {
-    if (password && found.password && found.password !== password) {
+    if (password && found.password && found.password.trim() !== password.trim()) {
       throw new Error('Incorrect password. Please check your credentials.');
     }
 
@@ -387,7 +408,7 @@ export async function loginUserApi(email: string, password?: string): Promise<Us
     return user;
   }
 
-  throw new Error('Account not found. Please register first before signing in!');
+  throw new Error('Account not found. Please register first with this email address!');
 }
 
 export async function registerUserApi(
@@ -397,8 +418,8 @@ export async function registerUserApi(
 ): Promise<{ success: boolean; message: string; user: User }> {
   const normalizedEmail = email.toLowerCase().trim();
 
-  if (!normalizedEmail.endsWith('@gmail.com') || !normalizedEmail.includes('@')) {
-    throw new Error('Invalid email address. Email must end with @gmail.com!');
+  if (!normalizedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+    throw new Error('Please enter a valid email address (e.g. name@example.com)');
   }
 
   let serverUser: User | null = null;
@@ -444,7 +465,7 @@ export async function registerUserApi(
 
   return {
     success: true,
-    message: 'Registration successful! Please sign in with your email and password.',
+    message: 'Registration successful! You can now sign in with your account on any device.',
     user,
   };
 }

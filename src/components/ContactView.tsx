@@ -16,8 +16,8 @@ export const ContactView: React.FC = () => {
     e.preventDefault();
     setErrorMsg(null);
     if (!formData.name || !formData.email || !formData.message) return;
-    if (!formData.email.toLowerCase().trim().endsWith('@gmail.com')) {
-      setErrorMsg('Please enter a valid Gmail address ending with @gmail.com');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.toLowerCase().trim())) {
+      setErrorMsg('Please enter a valid email address (e.g. name@example.com)');
       return;
     }
     setSubmitted(true);
@@ -120,7 +120,7 @@ export const ContactView: React.FC = () => {
                   required
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  placeholder="name@gmail.com"
+                  placeholder="name@example.com"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
                 />
               </div>
