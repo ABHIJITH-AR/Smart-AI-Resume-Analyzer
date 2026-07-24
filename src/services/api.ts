@@ -263,24 +263,7 @@ export async function loginUserApi(email: string, password?: string): Promise<Us
       return user;
     }
 
-    // Auto-create user account in local fallback
-    const rawName = normalizedEmail.split('@')[0].replace(/[._-]/g, ' ');
-    const autoName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
-    const newUser = {
-      id: 'usr-' + Date.now(),
-      name: autoName || 'User',
-      email: normalizedEmail,
-      password,
-    };
-    saveRegisteredUser(newUser);
-
-    const user: User = {
-      id: newUser.id,
-      name: newUser.name,
-      email: newUser.email,
-    };
-    setStoredUser(user);
-    return user;
+    throw new Error('Account not found. Please register first before signing in!');
   }
 }
 

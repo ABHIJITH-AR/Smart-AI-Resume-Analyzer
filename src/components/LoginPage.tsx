@@ -34,7 +34,9 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
         onLoginSuccess(user);
       } else {
         const regRes = await registerUserApi(name, email, password);
-        onLoginSuccess(regRes.user);
+        setSuccessMsg(regRes.message || 'Registration successful! Please sign in with your account.');
+        setMode('login');
+        setPassword('');
       }
     } catch (err: any) {
       setErrorMsg(err.message || 'Authentication failed. Please check your details.');
