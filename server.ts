@@ -60,7 +60,7 @@ const MongoAnalysis = mongoose.models.ResumeAnalysis || mongoose.model("ResumeAn
 
 // Initialize AI SDK with telemetry header
 const getAIClient = () => {
-  const apiKey = process.env.API_KEY || process.env.GEMINI_API_KEY;
+  const apiKey = process.env.API_KEY;
   if (!apiKey) {
     console.warn("API_KEY is not set in environment variables");
   }
@@ -68,7 +68,7 @@ const getAIClient = () => {
     apiKey: apiKey || "placeholder_key",
     httpOptions: {
       headers: {
-        "User-Agent": "aistudio-build",
+        "User-Agent": "app-build",
       },
     },
   });
