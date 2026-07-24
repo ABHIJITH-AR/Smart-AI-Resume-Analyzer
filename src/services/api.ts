@@ -245,7 +245,12 @@ export async function loginUserApi(email: string, password?: string): Promise<Us
       throw new Error(errorData.error || `Login failed with status ${res.status}`);
     }
   } catch (err: any) {
-    // Check client-side backup store
+    // If error came from server response, rethrow it directly
+    if (err.message && !err.message.includes('Failed to fetch') && !err.message.includes('NetworkError')) {
+      throw err;
+    }
+
+    // Fallback for offline network failure
     const localUsers = getRegisteredUsers();
     const found = localUsers.find((u) => u.email.toLowerCase() === normalizedEmail);
 
@@ -278,25 +283,37 @@ export async function registerUserApi(
     throw new Error('Invalid email address. Email must end with @gmail.com!');
   }
 
-  // Save locally
+  let serverUser: User | null = null;
+
+  // Send to server first so account is created in central server database/file
+  try {
+    const res = await fetch(`${API_BASE}/api/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: name.trim(), email: normalizedEmail, password }),
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      serverUser = data.user;
+    } else {
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(errorData.error || 'Registration failed on server');
+    }
+  } catch (err: any) {
+    if (err.message && !err.message.includes('Failed to fetch') && !err.message.includes('NetworkError')) {
+      throw err;
+    }
+  }
+
+  // Save locally as fallback
   const newUser = {
-    id: 'usr-' + Date.now(),
+    id: serverUser?.id || ('usr-' + Date.now()),
     name: name.trim(),
     email: normalizedEmail,
     password,
   };
   saveRegisteredUser(newUser);
-
-  // Send to server
-  try {
-    await fetch(`${API_BASE}/api/auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: name.trim(), email: normalizedEmail, password }),
-    });
-  } catch {
-    // silent fallback to local storage
-  }
 
   const user: User = {
     id: newUser.id,

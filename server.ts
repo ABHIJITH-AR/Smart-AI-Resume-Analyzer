@@ -1,6 +1,7 @@
 import express from "express";
 import path from "path";
 import cors from "cors";
+import fs from "fs";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI, Type } from "@google/genai";
 import mongoose from "mongoose";
@@ -83,8 +84,30 @@ app.get("/api/health", async (req, res) => {
   });
 });
 
-// Registered users in-memory store
-const registeredUsersStore: { id: string; name: string; email: string; password?: string }[] = [];
+// Registered users store with disk persistence
+const USERS_FILE = path.join(process.cwd(), "users_store.json");
+
+const loadRegisteredUsersFromDisk = (): { id: string; name: string; email: string; password?: string }[] => {
+  try {
+    if (fs.existsSync(USERS_FILE)) {
+      const data = fs.readFileSync(USERS_FILE, "utf-8");
+      return JSON.parse(data) || [];
+    }
+  } catch (err) {
+    console.error("Error reading users_store.json:", err);
+  }
+  return [];
+};
+
+const saveRegisteredUsersToDisk = (users: { id: string; name: string; email: string; password?: string }[]) => {
+  try {
+    fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), "utf-8");
+  } catch (err) {
+    console.error("Error saving users_store.json:", err);
+  }
+};
+
+const registeredUsersStore = loadRegisteredUsersFromDisk();
 
 // Auth endpoints
 app.post("/api/auth/login", async (req, res) => {
@@ -108,6 +131,8 @@ app.post("/api/auth/login", async (req, res) => {
           email: dbUser.email,
           password: dbUser.password,
         };
+        registeredUsersStore.push(existing);
+        saveRegisteredUsersToDisk(registeredUsersStore);
       }
     } catch (err) {
       console.error("Error fetching user from MongoDB:", err);
@@ -151,6 +176,7 @@ app.post("/api/auth/update-profile", async (req, res) => {
   if (userIndex >= 0) {
     if (updatedName) registeredUsersStore[userIndex].name = updatedName;
     if (updatedEmail) registeredUsersStore[userIndex].email = updatedEmail;
+    saveRegisteredUsersToDisk(registeredUsersStore);
   }
 
   if (mongoose.connection.readyState === 1) {
@@ -207,6 +233,7 @@ app.post("/api/auth/register", async (req, res) => {
     password,
   };
   registeredUsersStore.push(newUser);
+  saveRegisteredUsersToDisk(registeredUsersStore);
 
   if (mongoose.connection.readyState === 1) {
     try {
