@@ -68,7 +68,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
             </div>
           </div>
           <h3 className="text-2xl font-black text-white">
-            {mode === 'login' ? 'Sign In' : 'Create Account'}
+            {mode === 'login' ? 'Sign In' : 'Register'}
           </h3>
           <p className="text-xs text-slate-400">
             {mode === 'login'
@@ -182,7 +182,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
               <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
             ) : (
               <>
-                <span>{mode === 'login' ? 'Sign In' : 'Create Account'}</span>
+                <span>{mode === 'login' ? 'Sign In' : 'Register'}</span>
                 <ArrowRight className="w-4 h-4" />
               </>
             )}
@@ -202,7 +202,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
               }}
               className="text-blue-400 font-bold hover:underline"
             >
-              Register here
+              Register now
             </button>
           </div>
         ) : (

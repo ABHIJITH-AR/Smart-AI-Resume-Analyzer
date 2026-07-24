@@ -67,12 +67,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
           </div>
 
           <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
-            {mode === 'login' ? 'Sign In' : 'Create an Account'}
+            {mode === 'login' ? 'Sign In' : 'Register'}
           </h1>
           <p className="text-xs sm:text-sm text-slate-400 max-w-xs mx-auto">
             {mode === 'login'
               ? 'Sign in to access resume evaluations and ATS optimization tools.'
-              : 'Register your account to start analyzing resumes with AI.'}
+              : 'Create your account to start analyzing resumes with AI.'}
           </p>
         </div>
 
@@ -185,7 +185,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
             ) : (
               <>
-                <span>{mode === 'login' ? 'Sign In' : 'Create Account'}</span>
+                <span>{mode === 'login' ? 'Sign In' : 'Register'}</span>
                 <ArrowRight className="w-4 h-4" />
               </>
             )}
@@ -205,7 +205,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               }}
               className="text-blue-400 font-bold hover:underline"
             >
-              Register here
+              Register now
             </button>
           </div>
         ) : (
