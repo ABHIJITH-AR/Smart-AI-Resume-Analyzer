@@ -115,8 +115,24 @@ app.post("/api/auth/login", async (req, res) => {
   }
 
   if (!existing) {
-    res.status(401).json({ error: "Account not found. Please register first before signing in!" });
-    return;
+    // Auto-create user account if not registered yet for smooth onboarding
+    const rawName = normalizedEmail.split('@')[0].replace(/[._-]/g, ' ');
+    const autoName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
+    existing = {
+      id: "usr-" + Date.now(),
+      name: autoName || "User",
+      email: normalizedEmail,
+      password: password || undefined,
+    };
+    registeredUsersStore.push(existing);
+
+    if (mongoose.connection.readyState === 1) {
+      try {
+        await MongoUser.create(existing);
+      } catch (err) {
+        console.error("Error auto-creating Mongo user:", err);
+      }
+    }
   }
   if (password && existing.password && existing.password !== password) {
     res.status(401).json({ error: "Incorrect password. Please try again." });

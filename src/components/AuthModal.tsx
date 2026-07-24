@@ -39,9 +39,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
         onClose();
       } else {
         const regRes = await registerUserApi(name, email, password);
-        setSuccessMsg(regRes.message || 'Registration successful! Please sign in with your account.');
-        setMode('login');
-        setPassword('');
+        onSuccess(regRes.user);
+        onClose();
       }
     } catch (err: any) {
       setErrorMsg(err.message || 'Authentication failed. Please check your details.');

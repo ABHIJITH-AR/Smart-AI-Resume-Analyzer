@@ -263,12 +263,24 @@ export async function loginUserApi(email: string, password?: string): Promise<Us
       return user;
     }
 
-    // If backend returned a specific error message (like incorrect password or account not found), rethrow it
-    if (err.message && !err.message.includes('fetch') && !err.message.includes('status') && !err.message.includes('Failed')) {
-      throw err;
-    }
+    // Auto-create user account in local fallback
+    const rawName = normalizedEmail.split('@')[0].replace(/[._-]/g, ' ');
+    const autoName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
+    const newUser = {
+      id: 'usr-' + Date.now(),
+      name: autoName || 'User',
+      email: normalizedEmail,
+      password,
+    };
+    saveRegisteredUser(newUser);
 
-    throw new Error('Account not found. You must register first before signing in!');
+    const user: User = {
+      id: newUser.id,
+      name: newUser.name,
+      email: newUser.email,
+    };
+    setStoredUser(user);
+    return user;
   }
 }
 
