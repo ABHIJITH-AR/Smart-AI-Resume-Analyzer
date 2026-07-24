@@ -7,7 +7,7 @@ const STORAGE_KEYS = {
   SAVED_COMPARISONS: 'ai_resume_analyzer_comparisons',
 };
 
-const API_BASE = (import.meta.env.VITE_API_URL || import.meta.env.VITE_BACKEND_URL || '').replace(/\/$/, '');
+const API_BASE = ((import.meta as any).env?.VITE_API_URL || (import.meta as any).env?.VITE_BACKEND_URL || '').replace(/\/$/, '');
 
 // Local storage helper functions
 export const getStoredUser = (): User | null => {

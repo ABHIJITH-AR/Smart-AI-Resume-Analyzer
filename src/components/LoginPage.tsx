@@ -183,34 +183,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               </>
             )}
           </button>
-
-          <div className="relative my-2 flex items-center justify-center">
-            <div className="border-t border-slate-800 w-full" />
-            <span className="bg-slate-900 px-3 text-[11px] uppercase tracking-wider text-slate-500 font-semibold absolute">
-              or
-            </span>
-          </div>
-
-          <button
-            type="button"
-            disabled={loading}
-            onClick={async () => {
-              setLoading(true);
-              try {
-                const demoUser = await loginUserApi('demo.user@gmail.com', 'demo123');
-                onLoginSuccess(demoUser);
-              } catch {
-                const fallback: User = { id: 'demo-usr-1', name: 'Demo User', email: 'demo.user@gmail.com' };
-                onLoginSuccess(fallback);
-              } finally {
-                setLoading(false);
-              }
-            }}
-            className="w-full py-3 rounded-xl text-xs font-bold text-slate-300 bg-slate-800/80 hover:bg-slate-800 hover:text-white border border-slate-700/60 flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
-          >
-            <Sparkles className="w-4 h-4 text-blue-400" />
-            <span>Instant Demo Access</span>
-          </button>
         </form>
 
         {/* Toggle Footer Link */}

@@ -6,7 +6,7 @@ import { GoogleGenAI, Type } from "@google/genai";
 import mongoose from "mongoose";
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = Number(process.env.PORT) || 3000;
 
 app.use(cors());
 app.use(express.json({ limit: "10mb" }));
@@ -100,7 +100,7 @@ app.post("/api/auth/login", async (req, res) => {
 
   if (!existing && mongoose.connection.readyState === 1) {
     try {
-      const dbUser = await MongoUser.findOne({ email: normalizedEmail });
+      const dbUser = await MongoUser.findOne({ email: normalizedEmail } as any);
       if (dbUser) {
         existing = {
           id: dbUser.id,
@@ -205,7 +205,7 @@ app.post("/api/auth/register", async (req, res) => {
 
   if (!existing && mongoose.connection.readyState === 1) {
     try {
-      const dbUser = await MongoUser.findOne({ email: normalizedEmail });
+      const dbUser = await MongoUser.findOne({ email: normalizedEmail } as any);
       if (dbUser) existing = { id: dbUser.id, name: dbUser.name, email: dbUser.email };
     } catch (err) {
       console.error("Error checking Mongo user:", err);
