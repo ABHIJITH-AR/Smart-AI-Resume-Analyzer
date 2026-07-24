@@ -240,36 +240,37 @@ export async function loginUserApi(email: string, password?: string): Promise<Us
       const data = await res.json();
       setStoredUser(data.user);
       return data.user;
-    } else {
+    } else if (res.status === 400 || res.status === 401) {
       const errorData = await res.json().catch(() => ({}));
-      throw new Error(errorData.error || `Login failed with status ${res.status}`);
+      if (errorData.error) {
+        throw new Error(errorData.error);
+      }
     }
   } catch (err: any) {
-    // If error came from server response, rethrow it directly
-    if (err.message && !err.message.includes('Failed to fetch') && !err.message.includes('NetworkError')) {
+    if (err.message && (err.message.includes('Account not found') || err.message.includes('Incorrect password') || err.message.includes('Invalid email'))) {
       throw err;
     }
+  }
 
-    // Fallback for offline network failure
-    const localUsers = getRegisteredUsers();
-    const found = localUsers.find((u) => u.email.toLowerCase() === normalizedEmail);
+  // Fallback for local user state
+  const localUsers = getRegisteredUsers();
+  const found = localUsers.find((u) => u.email.toLowerCase() === normalizedEmail);
 
-    if (found) {
-      if (password && found.password && found.password !== password) {
-        throw new Error('Incorrect password. Please check your credentials.');
-      }
-
-      const user: User = {
-        id: found.id,
-        name: found.name,
-        email: found.email,
-      };
-      setStoredUser(user);
-      return user;
+  if (found) {
+    if (password && found.password && found.password !== password) {
+      throw new Error('Incorrect password. Please check your credentials.');
     }
 
-    throw new Error('Account not found. Please register first before signing in!');
+    const user: User = {
+      id: found.id,
+      name: found.name,
+      email: found.email,
+    };
+    setStoredUser(user);
+    return user;
   }
+
+  throw new Error('Account not found. Please register first before signing in!');
 }
 
 export async function registerUserApi(
@@ -298,12 +299,15 @@ export async function registerUserApi(
       serverUser = data.user;
     } else {
       const errorData = await res.json().catch(() => ({}));
-      throw new Error(errorData.error || 'Registration failed on server');
+      if (errorData && errorData.error) {
+        throw new Error(errorData.error);
+      }
     }
   } catch (err: any) {
-    if (err.message && !err.message.includes('Failed to fetch') && !err.message.includes('NetworkError')) {
+    if (err.message && (err.message.includes('already exists') || err.message.includes('required') || err.message.includes('Invalid'))) {
       throw err;
     }
+    console.warn('Network or server error during registration, falling back to local registration:', err);
   }
 
   // Save locally as fallback

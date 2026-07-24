@@ -12,21 +12,61 @@ const PORT = Number(process.env.PORT) || 3000;
 app.use(cors());
 app.use(express.json({ limit: "10mb" }));
 
+// Route URL normalization middleware (handles Vercel serverless path rewrites)
+app.use((req, _res, next) => {
+  if (!req.url.startsWith("/api") && (
+    req.url.startsWith("/auth") ||
+    req.url.startsWith("/analyze") ||
+    req.url.startsWith("/compare") ||
+    req.url.startsWith("/health")
+  )) {
+    req.url = "/api" + req.url;
+  }
+  next();
+});
+
+// Auto connect MongoDB middleware for serverless / traditional server
+app.use(async (_req, _res, next) => {
+  try {
+    await connectMongoDB();
+  } catch (e) {
+    console.warn("MongoDB connection middleware skipped error:", e);
+  }
+  next();
+});
+
 // MongoDB Connection Setup
 let isMongoConnected = false;
+let mongoConnectPromise: Promise<void> | null = null;
+
 const connectMongoDB = async () => {
   const mongoUri = process.env.MONGODB_URI;
   if (!mongoUri || mongoUri.includes("<db_password>")) {
     return;
   }
+  if (mongoose.connection.readyState === 1) {
+    isMongoConnected = true;
+    return;
+  }
   try {
-    if (mongoose.connection.readyState === 0) {
-      await mongoose.connect(mongoUri);
-      isMongoConnected = true;
-      console.log("MongoDB connected successfully");
+    if (!mongoConnectPromise) {
+      mongoConnectPromise = mongoose.connect(mongoUri, {
+        serverSelectionTimeoutMS: 3000,
+        connectTimeoutMS: 3000,
+      }).then(() => {
+        isMongoConnected = true;
+        console.log("MongoDB connected successfully");
+      }).catch((err) => {
+        console.warn("MongoDB connection failed, using in-memory store:", err?.message || err);
+        mongoConnectPromise = null;
+      });
     }
+    await Promise.race([
+      mongoConnectPromise,
+      new Promise((resolve) => setTimeout(resolve, 2500))
+    ]);
   } catch (err) {
-    console.warn("MongoDB connection failed, using in-memory store:", err);
+    console.warn("MongoDB connection check failed:", err);
   }
 };
 
@@ -101,9 +141,12 @@ const loadRegisteredUsersFromDisk = (): { id: string; name: string; email: strin
 
 const saveRegisteredUsersToDisk = (users: { id: string; name: string; email: string; password?: string }[]) => {
   try {
+    if (process.env.VERCEL || process.env.LAMBDA_TASK_ROOT) {
+      return;
+    }
     fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), "utf-8");
   } catch (err) {
-    console.error("Error saving users_store.json:", err);
+    console.warn("Could not save users to disk (read-only environment):", (err as Error).message);
   }
 };
 
@@ -203,54 +246,59 @@ app.post("/api/auth/update-profile", async (req, res) => {
 });
 
 app.post("/api/auth/register", async (req, res) => {
-  await connectMongoDB();
-  const { name, email, password } = req.body;
-  if (!email || !name) {
-    res.status(400).json({ error: "Name and Email are required" });
-    return;
-  }
-  const normalizedEmail = email.toLowerCase().trim();
-
-  let existing = registeredUsersStore.find((u) => u.email === normalizedEmail);
-
-  if (!existing && mongoose.connection.readyState === 1) {
-    try {
-      const dbUser = await MongoUser.findOne({ email: normalizedEmail } as any);
-      if (dbUser) existing = { id: dbUser.id, name: dbUser.name, email: dbUser.email };
-    } catch (err) {
-      console.error("Error checking Mongo user:", err);
+  try {
+    await connectMongoDB();
+    const { name, email, password } = req.body || {};
+    if (!email || !name) {
+      res.status(400).json({ error: "Name and Email are required" });
+      return;
     }
-  }
+    const normalizedEmail = email.toLowerCase().trim();
 
-  if (existing) {
-    res.status(400).json({ error: "An account with this email already exists. Please sign in." });
-    return;
-  }
-  const newUser = {
-    id: "usr-" + Date.now(),
-    name,
-    email: normalizedEmail,
-    password,
-  };
-  registeredUsersStore.push(newUser);
-  saveRegisteredUsersToDisk(registeredUsersStore);
+    let existing = registeredUsersStore.find((u) => u.email === normalizedEmail);
 
-  if (mongoose.connection.readyState === 1) {
-    try {
-      await MongoUser.create(newUser);
-    } catch (err) {
-      console.error("Error saving user to MongoDB:", err);
+    if (!existing && mongoose.connection.readyState === 1) {
+      try {
+        const dbUser = await MongoUser.findOne({ email: normalizedEmail } as any);
+        if (dbUser) existing = { id: dbUser.id, name: dbUser.name, email: dbUser.email };
+      } catch (err) {
+        console.error("Error checking Mongo user:", err);
+      }
     }
-  }
 
-  res.json({
-    message: "Registration successful! Please sign in with your email and password.",
-    user: {
-      id: newUser.id,
-      name: newUser.name,
-      email: newUser.email,
-    },
-  });
+    if (existing) {
+      res.status(400).json({ error: "An account with this email already exists. Please sign in." });
+      return;
+    }
+    const newUser = {
+      id: "usr-" + Date.now(),
+      name,
+      email: normalizedEmail,
+      password,
+    };
+    registeredUsersStore.push(newUser);
+    saveRegisteredUsersToDisk(registeredUsersStore);
+
+    if (mongoose.connection.readyState === 1) {
+      try {
+        await MongoUser.create(newUser);
+      } catch (err) {
+        console.error("Error saving user to MongoDB:", err);
+      }
+    }
+
+    res.json({
+      message: "Registration successful! Please sign in with your email and password.",
+      user: {
+        id: newUser.id,
+        name: newUser.name,
+        email: newUser.email,
+      },
+    });
+  } catch (err: any) {
+    console.error("Error in /api/auth/register:", err);
+    res.status(500).json({ error: err?.message || "Registration failed on server" });
+  }
 });
 
 // Resume Analysis Endpoint
@@ -513,9 +561,15 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Smart AI Resume Analyzer server running on http://0.0.0.0:${PORT}`);
-  });
+  if (!process.env.VERCEL) {
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Smart AI Resume Analyzer server running on http://0.0.0.0:${PORT}`);
+    });
+  }
 }
 
-startServer();
+if (!process.env.VERCEL) {
+  startServer();
+}
+
+export default app;
