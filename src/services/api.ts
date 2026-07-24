@@ -7,6 +7,8 @@ const STORAGE_KEYS = {
   SAVED_COMPARISONS: 'ai_resume_analyzer_comparisons',
 };
 
+const API_BASE = (import.meta.env.VITE_API_URL || import.meta.env.VITE_BACKEND_URL || '').replace(/\/$/, '');
+
 // Local storage helper functions
 export const getStoredUser = (): User | null => {
   try {
@@ -62,7 +64,7 @@ export async function analyzeResumeApi(params: {
   targetSeniority?: string;
   jobDescription?: string;
 }): Promise<AnalysisResult> {
-  const res = await fetch('/api/analyze-resume', {
+  const res = await fetch(`${API_BASE}/api/analyze-resume`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -96,7 +98,7 @@ export async function compareResumesApi(params: {
   resumes: { id: string; name: string; resumeText: string }[];
   jobDescription?: string;
 }): Promise<ComparisonResult> {
-  const res = await fetch('/api/compare-resumes', {
+  const res = await fetch(`${API_BASE}/api/compare-resumes`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -176,7 +178,7 @@ export async function loginUserApi(email: string, password?: string): Promise<Us
   
   // Try server endpoint first
   try {
-    const res = await fetch('/api/auth/login', {
+    const res = await fetch(`${API_BASE}/api/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: normalizedEmail, password }),
@@ -188,33 +190,34 @@ export async function loginUserApi(email: string, password?: string): Promise<Us
       return data.user;
     } else {
       const errorData = await res.json().catch(() => ({}));
-      if (errorData.error) {
-        throw new Error(errorData.error);
-      }
+      throw new Error(errorData.error || `Login failed with status ${res.status}`);
     }
   } catch (err: any) {
     // Check client-side backup store
     const localUsers = getRegisteredUsers();
     const found = localUsers.find((u) => u.email.toLowerCase() === normalizedEmail);
 
-    if (!found) {
-      throw new Error('Account not found. You must register first before signing in!');
+    if (found) {
+      if (password && found.password && found.password !== password) {
+        throw new Error('Incorrect password. Please check your credentials.');
+      }
+
+      const user: User = {
+        id: found.id,
+        name: found.name,
+        email: found.email,
+      };
+      setStoredUser(user);
+      return user;
     }
 
-    if (password && found.password && found.password !== password) {
-      throw new Error('Incorrect password. Please check your credentials.');
+    // If backend returned a specific error message (like incorrect password or account not found), rethrow it
+    if (err.message && !err.message.includes('fetch') && !err.message.includes('status') && !err.message.includes('Failed')) {
+      throw err;
     }
 
-    const user: User = {
-      id: found.id,
-      name: found.name,
-      email: found.email,
-    };
-    setStoredUser(user);
-    return user;
+    throw new Error('Account not found. You must register first before signing in!');
   }
-
-  throw new Error('Account not found. Please register first!');
 }
 
 export async function registerUserApi(
@@ -239,7 +242,7 @@ export async function registerUserApi(
 
   // Send to server
   try {
-    await fetch('/api/auth/register', {
+    await fetch(`${API_BASE}/api/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: name.trim(), email: normalizedEmail, password }),
