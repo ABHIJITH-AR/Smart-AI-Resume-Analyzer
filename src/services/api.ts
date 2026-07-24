@@ -162,12 +162,64 @@ export const saveRegisteredUser = (user: { id: string; name: string; email: stri
   const current = getRegisteredUsers();
   const existingIndex = current.findIndex((u) => u.email.toLowerCase() === user.email.toLowerCase());
   if (existingIndex >= 0) {
-    current[existingIndex] = user;
+    current[existingIndex] = { ...current[existingIndex], ...user };
   } else {
     current.push(user);
   }
   localStorage.setItem(REGISTERED_USERS_KEY, JSON.stringify(current));
 };
+
+export const updateRegisteredUserInLocalStore = (oldEmail: string, updatedUser: User) => {
+  const current = getRegisteredUsers();
+  const index = current.findIndex(
+    (u) => u.id === updatedUser.id || u.email.toLowerCase() === oldEmail.toLowerCase()
+  );
+  if (index >= 0) {
+    current[index] = {
+      ...current[index],
+      id: updatedUser.id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+    };
+    localStorage.setItem(REGISTERED_USERS_KEY, JSON.stringify(current));
+  } else {
+    saveRegisteredUser({
+      id: updatedUser.id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+    });
+  }
+};
+
+export async function updateUserProfileApi(oldEmail: string, updatedUser: User): Promise<User> {
+  // Update local storage first so immediate fallback or offline login works
+  updateRegisteredUserInLocalStore(oldEmail, updatedUser);
+  setStoredUser(updatedUser);
+
+  try {
+    const res = await fetch(`${API_BASE}/api/auth/update-profile`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: updatedUser.id,
+        oldEmail,
+        name: updatedUser.name,
+        email: updatedUser.email,
+      }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.user) {
+        setStoredUser(data.user);
+        return data.user;
+      }
+    }
+  } catch (err) {
+    console.warn('Backend update profile sync failed, using local update:', err);
+  }
+
+  return updatedUser;
+}
 
 export async function loginUserApi(email: string, password?: string): Promise<User> {
   const normalizedEmail = email.toLowerCase().trim();

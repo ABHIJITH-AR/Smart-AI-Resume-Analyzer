@@ -43,6 +43,13 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [profileError, setProfileError] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (user) {
+      setEditName(user.name || '');
+      setEditEmail(user.email || '');
+    }
+  }, [user, showProfileModal]);
+
   const navItems = [
     { id: 'home', label: 'Home', icon: FileText },
     { id: 'analyzer', label: 'Analyzer', icon: Sparkles },
@@ -51,7 +58,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'contact', label: 'Contact', icon: Mail },
   ];
 
-  const handleSaveProfile = (e: React.FormEvent) => {
+  const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
     setProfileError(null);
@@ -68,7 +75,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       email: emailToSave,
     };
     if (onUpdateUser) {
-      onUpdateUser(updated);
+      await onUpdateUser(updated);
     }
     setSavedSuccess(true);
     setTimeout(() => {

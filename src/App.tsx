@@ -13,7 +13,7 @@ import { Toast } from './components/Toast';
 
 import { AnalysisResult, User } from './types';
 import { SampleResume } from './data/sampleResumes';
-import { analyzeResumeApi, getStoredUser, setStoredUser } from './services/api';
+import { analyzeResumeApi, getStoredUser, setStoredUser, updateUserProfileApi } from './services/api';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<string>('home');
@@ -99,9 +99,10 @@ export default function App() {
         user={user}
         onOpenAuth={() => setAuthModalOpen(true)}
         onLogout={handleLogout}
-        onUpdateUser={(updatedUser) => {
-          setUser(updatedUser);
-          setStoredUser(updatedUser);
+        onUpdateUser={async (updatedUser) => {
+          const oldEmail = user?.email || updatedUser.email;
+          const savedUser = await updateUserProfileApi(oldEmail, updatedUser);
+          setUser(savedUser);
           showToast('Profile updated successfully!');
         }}
       />

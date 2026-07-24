@@ -55,11 +55,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
       <div className="relative w-full max-w-md rounded-3xl bg-slate-900/90 border border-slate-800 shadow-2xl p-6 sm:p-8 space-y-6 backdrop-blur-xl">
         {/* Logo & Header */}
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center justify-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold mb-1">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Resume Analyzer</span>
-          </div>
-
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 p-0.5 mx-auto shadow-lg shadow-blue-500/20">
             <div className="w-full h-full bg-slate-900 rounded-[14px] flex items-center justify-center">
               <FileText className="w-6 h-6 text-blue-400" />

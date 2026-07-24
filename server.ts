@@ -132,6 +132,50 @@ app.post("/api/auth/login", async (req, res) => {
   });
 });
 
+app.post("/api/auth/update-profile", async (req, res) => {
+  await connectMongoDB();
+  const { id, oldEmail, name, email } = req.body;
+  if (!id && !oldEmail && !email) {
+    res.status(400).json({ error: "User ID or email is required" });
+    return;
+  }
+
+  const searchEmail = (oldEmail || email || "").toLowerCase().trim();
+  let userIndex = registeredUsersStore.findIndex(
+    (u) => (id && u.id === id) || (searchEmail && u.email === searchEmail)
+  );
+
+  const updatedName = name ? name.trim() : "";
+  const updatedEmail = email ? email.toLowerCase().trim() : searchEmail;
+
+  if (userIndex >= 0) {
+    if (updatedName) registeredUsersStore[userIndex].name = updatedName;
+    if (updatedEmail) registeredUsersStore[userIndex].email = updatedEmail;
+  }
+
+  if (mongoose.connection.readyState === 1) {
+    try {
+      const query = id ? { id } : { email: searchEmail };
+      const updateData: any = {};
+      if (updatedName) updateData.name = updatedName;
+      if (updatedEmail) updateData.email = updatedEmail;
+
+      await MongoUser.updateOne(query, { $set: updateData });
+    } catch (err) {
+      console.error("Error updating Mongo user profile:", err);
+    }
+  }
+
+  res.json({
+    message: "Profile updated successfully",
+    user: {
+      id: id || (userIndex >= 0 ? registeredUsersStore[userIndex].id : "usr-" + Date.now()),
+      name: updatedName || (userIndex >= 0 ? registeredUsersStore[userIndex].name : ""),
+      email: updatedEmail || searchEmail,
+    },
+  });
+});
+
 app.post("/api/auth/register", async (req, res) => {
   await connectMongoDB();
   const { name, email, password } = req.body;
