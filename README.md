@@ -27,8 +27,8 @@ An intelligent, full-stack application for evaluating resumes, scoring ATS (Appl
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js (v18 or higher)
-- npm or bun
+- Node.js
+- npm
 
 ### Environment Setup
 1. Clone the repository.
