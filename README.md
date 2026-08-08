@@ -28,14 +28,7 @@ An intelligent, full-stack application for evaluating resumes, scoring ATS (Appl
 
 ### Prerequisites
 - Node.js (v18 or higher)
-- npm or bun
-
-### Environment Setup
-1. Clone the repository.
-2. Create a `.env` file based on `.env.example`:
-   ```env
-   MY_API_KEY=you_api_key_here
-   ```
+- npm
 
 ### Installation & Running Locally
 
