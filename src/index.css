@@ -1,1 +1,42 @@
 @import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-dark: #000000;
+    --bg-card: #0d0d0d;
+    --bg-card-hover: #171717;
+    --accent-blue: #0877ff;
+    --accent-blue-hover: #0062d6;
+  }
+
+  body {
+    background-color: #000000;
+    color: #f8fafc;
+    font-family: inherit;
+  }
+}
+
+.bg-accent {
+  background-color: #0877ff;
+}
+
+.text-accent {
+  color: #0877ff;
+}
+
+.border-accent {
+  border-color: #0877ff;
+}
+
+.bg-dark-base {
+  background-color: #000000;
+}
+
+.bg-dark-card {
+  background-color: #0d0d0d;
+}
+
+.bg-dark-card-hover:hover {
+  background-color: #171717;
+}
+

@@ -51,20 +51,20 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn">
-      <div className="relative w-full max-w-md rounded-3xl bg-slate-900 border border-slate-800 shadow-2xl p-6 sm:p-8 space-y-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
+      <div className="relative w-full max-w-md rounded-3xl bg-[#0d0d0d] border border-[#262626] shadow-2xl p-6 sm:p-8 space-y-6">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-200 rounded-lg"
+          className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-200 rounded-lg cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
 
         {/* Modal Header */}
         <div className="text-center space-y-2">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-600 to-purple-600 p-0.5 mx-auto shadow-md">
-            <div className="w-full h-full bg-slate-900 rounded-[14px] flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-blue-400" />
+          <div className="w-10 h-10 rounded-2xl bg-[#0877ff] p-0.5 mx-auto shadow-md shadow-[#0877ff]/20">
+            <div className="w-full h-full bg-black rounded-[14px] flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-[#0877ff]" />
             </div>
           </div>
           <h3 className="text-2xl font-black text-white">
@@ -78,15 +78,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
         </div>
 
         {/* Mode Switch Tabs */}
-        <div className="flex rounded-xl bg-slate-800 p-1 text-xs font-semibold">
+        <div className="flex rounded-xl bg-black p-1 text-xs font-semibold border border-[#262626]">
           <button
             onClick={() => {
               setMode('login');
               setErrorMsg(null);
               setSuccessMsg(null);
             }}
-            className={`flex-1 py-2 rounded-lg transition-all ${
-              mode === 'login' ? 'bg-slate-900 text-blue-400 shadow-sm' : 'text-slate-500'
+            className={`flex-1 py-2 rounded-lg transition-all cursor-pointer ${
+              mode === 'login' ? 'bg-[#0877ff] text-white shadow-sm font-bold' : 'text-slate-400 hover:text-white'
             }`}
           >
             Sign In
@@ -97,8 +97,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
               setErrorMsg(null);
               setSuccessMsg(null);
             }}
-            className={`flex-1 py-2 rounded-lg transition-all ${
-              mode === 'register' ? 'bg-slate-900 text-blue-400 shadow-sm' : 'text-slate-500'
+            className={`flex-1 py-2 rounded-lg transition-all cursor-pointer ${
+              mode === 'register' ? 'bg-[#0877ff] text-white shadow-sm font-bold' : 'text-slate-400 hover:text-white'
             }`}
           >
             Register
@@ -133,7 +133,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="John Doe"
-                  className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-700 bg-slate-800 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                  className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-[#262626] bg-black text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#0877ff]/50"
                 />
               </div>
             </div>
@@ -151,7 +151,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@example.com"
-                className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-700 bg-slate-800 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-[#262626] bg-black text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#0877ff]/50"
               />
             </div>
           </div>
@@ -168,7 +168,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-700 bg-slate-800 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-[#262626] bg-black text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#0877ff]/50"
               />
             </div>
           </div>
@@ -176,14 +176,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:opacity-95 shadow-md flex items-center justify-center gap-2"
+            className="w-full py-3.5 rounded-xl text-sm font-bold text-white bg-[#0877ff] hover:bg-[#0062d6] shadow-lg shadow-[#0877ff]/20 flex items-center justify-center gap-2 transition-all cursor-pointer"
           >
             {loading ? (
               <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
             ) : (
               <>
                 <span>{mode === 'login' ? 'Sign In' : 'Register'}</span>
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4 text-white" />
               </>
             )}
           </button>
@@ -191,7 +191,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
 
         {/* Toggle link at bottom */}
         {mode === 'login' ? (
-          <div className="text-center text-xs text-slate-400 pt-2 border-t border-slate-800">
+          <div className="text-center text-xs text-slate-400 pt-2 border-t border-[#262626]">
             Don't have an account?{' '}
             <button
               type="button"
@@ -200,13 +200,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                 setErrorMsg(null);
                 setSuccessMsg(null);
               }}
-              className="text-blue-400 font-bold hover:underline"
+              className="text-[#0877ff] font-bold hover:underline"
             >
               Register now
             </button>
           </div>
         ) : (
-          <div className="text-center text-xs text-slate-400 pt-2 border-t border-slate-800">
+          <div className="text-center text-xs text-slate-400 pt-2 border-t border-[#262626]">
             Already have an account?{' '}
             <button
               type="button"
@@ -215,7 +215,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                 setErrorMsg(null);
                 setSuccessMsg(null);
               }}
-              className="text-blue-400 font-bold hover:underline"
+              className="text-[#0877ff] font-bold hover:underline"
             >
               Sign In
             </button>

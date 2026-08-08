@@ -88,7 +88,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans transition-colors duration-300 flex flex-col justify-between selection:bg-blue-500 selection:text-white">
+    <div className="min-h-screen bg-black text-slate-100 font-sans transition-colors duration-300 flex flex-col justify-between selection:bg-[#0877ff] selection:text-white">
       {/* Top Navbar */}
       <Navbar
         activeTab={activeTab}

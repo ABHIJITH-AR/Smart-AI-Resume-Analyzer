@@ -85,7 +85,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   return (
-    <header className="sticky top-0 z-50 backdrop-blur-xl bg-slate-900/90 border-b border-slate-800 transition-colors duration-300">
+    <header className="sticky top-0 z-50 backdrop-blur-xl bg-black/95 border-b border-[#262626] transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -93,13 +93,14 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => setActiveTab('home')}
             className="flex items-center gap-3 cursor-pointer group"
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 p-0.5 shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform duration-200">
-              <div className="w-full h-full bg-slate-900 rounded-[10px] flex items-center justify-center">
-                <FileText className="w-5 h-5 text-blue-400 group-hover:rotate-6 transition-transform" />
+            <div className="w-10 h-10 rounded-xl bg-[#0877ff] p-0.5 shadow-md shadow-[#0877ff]/20 group-hover:scale-105 transition-transform duration-200">
+              <div className="w-full h-full bg-black rounded-[10px] flex items-center justify-center">
+                <FileText className="w-5 h-5 text-[#0877ff] group-hover:rotate-6 transition-transform" />
               </div>
             </div>
+
             <div>
-              <span className="text-lg font-bold bg-gradient-to-r from-blue-500 via-indigo-400 to-purple-400 bg-clip-text text-transparent">
+              <span className="text-lg font-bold text-[#0877ff]">
                 Smart AI
               </span>
               <span className="text-lg font-extrabold text-white ml-1">
@@ -119,11 +120,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                   onClick={() => setActiveTab(item.id)}
                   className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                     isActive
-                      ? 'bg-blue-950/80 text-blue-400 font-semibold shadow-sm'
-                      : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+                      ? 'bg-[#0877ff]/15 text-[#0877ff] font-semibold border border-[#0877ff]/30 shadow-sm'
+                      : 'text-slate-300 hover:text-white hover:bg-[#171717]'
                   }`}
                 >
-                  <Icon className={`w-4 h-4 ${isActive ? 'text-blue-400' : ''}`} />
+                  <Icon className={`w-4 h-4 ${isActive ? 'text-[#0877ff]' : ''}`} />
                   {item.label}
                 </button>
               );
@@ -135,20 +136,20 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Quick Analyze Button */}
             <button
               onClick={() => setActiveTab('analyzer')}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-semibold text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:opacity-95 shadow-md shadow-blue-500/20 active:scale-95 transition-all"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-bold text-white bg-[#0877ff] hover:bg-[#0062d6] shadow-md shadow-[#0877ff]/20 active:scale-95 transition-all"
             >
-              <Sparkles className="w-4 h-4" />
+              <Sparkles className="w-4 h-4 text-white" />
               Analyze Resume
             </button>
 
             {/* User Profile / Auth */}
             {user ? (
-              <div className="relative pl-2 border-l border-slate-800">
+              <div className="relative pl-2 border-l border-[#262626]">
                 <button
                   onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-                  className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 transition-colors"
+                  className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-[#0d0d0d] hover:bg-[#171717] border border-[#262626] transition-colors"
                 >
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold text-xs shadow-md">
+                  <div className="w-8 h-8 rounded-full bg-[#0877ff] text-white flex items-center justify-center font-bold text-xs shadow-md">
                     {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
                   </div>
                   <span className="text-xs font-semibold text-slate-200 max-w-[120px] truncate">
@@ -158,9 +159,9 @@ export const Navbar: React.FC<NavbarProps> = ({
 
                 {/* Profile Dropdown */}
                 {profileDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl p-2 z-50 animate-fadeIn space-y-1">
-                    <div className="px-3.5 py-3 border-b border-slate-800 flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold text-sm shadow-md shrink-0">
+                  <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-[#0d0d0d] border border-[#262626] shadow-2xl p-2 z-50 animate-fadeIn space-y-1">
+                    <div className="px-3.5 py-3 border-b border-[#262626] flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-[#0877ff] text-white flex items-center justify-center font-bold text-sm shadow-md shrink-0">
                         {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
                       </div>
                       <div className="min-w-0 flex-1">
@@ -176,9 +177,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                         setShowProfileModal(true);
                         setProfileDropdownOpen(false);
                       }}
-                      className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-200 hover:bg-slate-800 transition-colors"
+                      className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-200 hover:bg-[#171717] transition-colors"
                     >
-                      <UserIcon className="w-4 h-4 text-blue-400" />
+                      <UserIcon className="w-4 h-4 text-[#0877ff]" />
                       <span>My Profile</span>
                     </button>
 
@@ -198,9 +199,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             ) : (
               <button
                 onClick={onOpenAuth}
-                className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-slate-200 hover:bg-slate-800 rounded-lg transition-colors border border-slate-700"
+                className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-slate-200 hover:bg-[#171717] rounded-lg transition-colors border border-[#262626]"
               >
-                <UserIcon className="w-4 h-4" />
+                <UserIcon className="w-4 h-4 text-[#0877ff]" />
                 Sign In
               </button>
             )}

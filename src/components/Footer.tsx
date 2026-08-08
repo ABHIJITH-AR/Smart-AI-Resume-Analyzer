@@ -7,7 +7,7 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
   return (
-    <footer className="bg-slate-900 text-slate-300 border-t border-slate-800 transition-colors duration-300">
+    <footer className="bg-black text-slate-300 border-t border-[#262626] transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 mb-12">
           {/* Brand Col */}
@@ -16,9 +16,9 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
               onClick={() => setActiveTab('home')}
               className="flex items-center gap-2 cursor-pointer"
             >
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-purple-600 p-0.5 shadow-md">
-                <div className="w-full h-full bg-slate-900 rounded-[10px] flex items-center justify-center">
-                  <FileText className="w-5 h-5 text-blue-400" />
+              <div className="w-9 h-9 rounded-xl bg-[#0877ff] p-0.5 shadow-md">
+                <div className="w-full h-full bg-black rounded-[10px] flex items-center justify-center">
+                  <FileText className="w-5 h-5 text-[#0877ff]" />
                 </div>
               </div>
               <span className="text-xl font-bold text-white">Smart AI Resume Analyzer</span>
@@ -35,17 +35,17 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
             </h3>
             <ul className="space-y-2.5 text-sm text-slate-400">
               <li>
-                <button onClick={() => setActiveTab('analyzer')} className="hover:text-blue-400 transition-colors">
+                <button onClick={() => setActiveTab('analyzer')} className="hover:text-[#0877ff] transition-colors">
                   AI Resume Analyzer
                 </button>
               </li>
               <li>
-                <button onClick={() => setActiveTab('analyzer')} className="hover:text-blue-400 transition-colors">
+                <button onClick={() => setActiveTab('analyzer')} className="hover:text-[#0877ff] transition-colors">
                   ATS Score Checker
                 </button>
               </li>
               <li>
-                <button onClick={() => setActiveTab('compare')} className="hover:text-blue-400 transition-colors">
+                <button onClick={() => setActiveTab('compare')} className="hover:text-[#0877ff] transition-colors">
                   Multi-Resume Comparison
                 </button>
               </li>
@@ -59,22 +59,22 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
             </h3>
             <ul className="space-y-2.5 text-sm text-slate-400">
               <li>
-                <button onClick={() => setActiveTab('about')} className="hover:text-blue-400 transition-colors">
+                <button onClick={() => setActiveTab('about')} className="hover:text-[#0877ff] transition-colors">
                   How ATS Algorithms Work
                 </button>
               </li>
               <li>
-                <button onClick={() => setActiveTab('about')} className="hover:text-blue-400 transition-colors">
+                <button onClick={() => setActiveTab('about')} className="hover:text-[#0877ff] transition-colors">
                   Action Verbs Library
                 </button>
               </li>
               <li>
-                <button onClick={() => setActiveTab('about')} className="hover:text-blue-400 transition-colors">
+                <button onClick={() => setActiveTab('about')} className="hover:text-[#0877ff] transition-colors">
                   Resume Formatting Tips
                 </button>
               </li>
               <li>
-                <button onClick={() => setActiveTab('contact')} className="hover:text-blue-400 transition-colors">
+                <button onClick={() => setActiveTab('contact')} className="hover:text-[#0877ff] transition-colors">
                   24/7 AI Support
                 </button>
               </li>

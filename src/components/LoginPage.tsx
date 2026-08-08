@@ -46,18 +46,18 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-center items-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-black text-slate-100 flex flex-col justify-center items-center p-4 relative overflow-hidden">
       {/* Background glow effects */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 left-1/3 w-80 h-80 bg-purple-600/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#0877ff]/15 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-1/4 left-1/3 w-80 h-80 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
 
       {/* Main Login/Register Card */}
-      <div className="relative w-full max-w-md rounded-3xl bg-slate-900/90 border border-slate-800 shadow-2xl p-6 sm:p-8 space-y-6 backdrop-blur-xl">
+      <div className="relative w-full max-w-md rounded-3xl bg-[#0d0d0d] border border-[#262626] shadow-2xl p-6 sm:p-8 space-y-6 backdrop-blur-xl">
         {/* Logo & Header */}
         <div className="text-center space-y-3">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 p-0.5 mx-auto shadow-lg shadow-blue-500/20">
-            <div className="w-full h-full bg-slate-900 rounded-[14px] flex items-center justify-center">
-              <FileText className="w-6 h-6 text-blue-400" />
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#0877ff] to-blue-400 p-0.5 mx-auto shadow-lg shadow-[#0877ff]/20">
+            <div className="w-full h-full bg-black rounded-[14px] flex items-center justify-center">
+              <FileText className="w-6 h-6 text-[#0877ff]" />
             </div>
           </div>
 
@@ -72,7 +72,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
         </div>
 
         {/* Tab switcher */}
-        <div className="flex rounded-xl bg-slate-800/80 p-1 text-xs font-semibold border border-slate-700/50">
+        <div className="flex rounded-xl bg-black p-1 text-xs font-semibold border border-[#262626]">
           <button
             type="button"
             onClick={() => {
@@ -81,7 +81,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               setSuccessMsg(null);
             }}
             className={`flex-1 py-2.5 rounded-lg transition-all ${
-              mode === 'login' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200'
+              mode === 'login' ? 'bg-[#0877ff] text-white font-bold shadow-md' : 'text-slate-400 hover:text-white'
             }`}
           >
             Sign In
@@ -94,7 +94,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               setSuccessMsg(null);
             }}
             className={`flex-1 py-2.5 rounded-lg transition-all ${
-              mode === 'register' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200'
+              mode === 'register' ? 'bg-[#0877ff] text-white font-bold shadow-md' : 'text-slate-400 hover:text-white'
             }`}
           >
             Register
@@ -124,14 +124,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                 Full Name
               </label>
               <div className="relative">
-                <UserIcon className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <UserIcon className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Enter your full name"
-                  className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-700 bg-slate-800/80 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                  className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-[#262626] bg-black text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-[#0877ff]/50"
                 />
               </div>
             </div>
@@ -142,14 +142,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               Email Address
             </label>
             <div className="relative">
-              <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@example.com"
-                className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-700 bg-slate-800/80 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-[#262626] bg-black text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-[#0877ff]/50"
               />
             </div>
           </div>
@@ -159,14 +159,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               Password
             </label>
             <div className="relative">
-              <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Lock className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-700 bg-slate-800/80 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-[#262626] bg-black text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-[#0877ff]/50"
               />
             </div>
           </div>
@@ -174,14 +174,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:opacity-95 shadow-lg shadow-blue-600/25 flex items-center justify-center gap-2 transition-transform active:scale-[0.98]"
+            className="w-full py-3.5 rounded-xl text-sm font-bold text-white bg-[#0877ff] hover:bg-[#0062d6] shadow-lg shadow-[#0877ff]/20 flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
           >
             {loading ? (
               <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
             ) : (
               <>
                 <span>{mode === 'login' ? 'Sign In' : 'Register'}</span>
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4 text-white" />
               </>
             )}
           </button>
@@ -189,7 +189,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
 
         {/* Toggle Footer Link */}
         {mode === 'login' ? (
-          <div className="text-center text-xs text-slate-400 pt-3 border-t border-slate-800">
+          <div className="text-center text-xs text-slate-400 pt-3 border-t border-[#262626]">
             Don't have an account?{' '}
             <button
               type="button"
@@ -198,13 +198,13 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                 setErrorMsg(null);
                 setSuccessMsg(null);
               }}
-              className="text-blue-400 font-bold hover:underline"
+              className="text-[#0877ff] font-bold hover:underline"
             >
               Register now
             </button>
           </div>
         ) : (
-          <div className="text-center text-xs text-slate-400 pt-3 border-t border-slate-800">
+          <div className="text-center text-xs text-slate-400 pt-3 border-t border-[#262626]">
             Already have an account?{' '}
             <button
               type="button"
@@ -213,7 +213,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                 setErrorMsg(null);
                 setSuccessMsg(null);
               }}
-              className="text-blue-400 font-bold hover:underline"
+              className="text-[#0877ff] font-bold hover:underline"
             >
               Sign In
             </button>
