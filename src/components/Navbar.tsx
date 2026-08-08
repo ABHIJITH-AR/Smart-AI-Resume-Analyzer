@@ -133,15 +133,6 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Right Actions */}
           <div className="hidden md:flex items-center gap-3">
-            {/* Quick Analyze Button */}
-            <button
-              onClick={() => setActiveTab('analyzer')}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-bold text-white bg-[#0877ff] hover:bg-[#0062d6] shadow-md shadow-[#0877ff]/20 active:scale-95 transition-all"
-            >
-              <Sparkles className="w-4 h-4 text-white" />
-              Analyze Resume
-            </button>
-
             {/* User Profile / Auth */}
             {user ? (
               <div className="relative pl-2 border-l border-[#262626]">
@@ -356,17 +347,6 @@ export const Navbar: React.FC<NavbarProps> = ({
           })}
 
           <div className="pt-3 border-t border-slate-800 flex flex-col gap-2">
-            <button
-              onClick={() => {
-                setActiveTab('analyzer');
-                setMobileMenuOpen(false);
-              }}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 shadow-md"
-            >
-              <Sparkles className="w-4 h-4" />
-              Analyze Resume Now
-            </button>
-
             {user ? (
               <div className="space-y-2 pt-2 border-t border-slate-800">
                 <div className="flex items-center justify-between px-1">
