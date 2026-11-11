@@ -38,10 +38,12 @@ app.use(async (_req, _res, next) => {
 // MongoDB Connection Setup
 let isMongoConnected = false;
 let mongoConnectPromise: Promise<void> | null = null;
+let lastMongoError: string | null = null;
 
 const connectMongoDB = async () => {
   const mongoUri = process.env.MONGODB_URI;
   if (!mongoUri || mongoUri.includes("<db_password>")) {
+    lastMongoError = "MONGODB_URI is not set";
     return;
   }
   if (mongoose.connection.readyState === 1) {
@@ -55,9 +57,11 @@ const connectMongoDB = async () => {
         connectTimeoutMS: 3000,
       }).then(() => {
         isMongoConnected = true;
+        lastMongoError = null;
         console.log("MongoDB connected successfully");
       }).catch((err) => {
-        console.warn("MongoDB connection failed, using in-memory store:", err?.message || err);
+        lastMongoError = err?.message || String(err);
+        console.warn("MongoDB connection failed, using in-memory store:", lastMongoError);
         mongoConnectPromise = null;
       });
     }
@@ -234,6 +238,8 @@ app.get("/api/health", async (req, res) => {
   res.json({
     status: "ok",
     mongoConnected: mongoose.connection.readyState === 1,
+    mongoConfigured: Boolean(process.env.MONGODB_URI),
+    mongoError: lastMongoError,
     timestamp: new Date().toISOString(),
   });
 });
