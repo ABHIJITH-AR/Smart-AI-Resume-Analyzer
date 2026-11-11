@@ -1,8 +1,8 @@
+import "dotenv/config";
 import express from "express";
 import path from "path";
 import cors from "cors";
 import fs from "fs";
-import { createServer as createViteServer } from "vite";
 import { GoogleGenAI, Type } from "@google/genai";
 import mongoose from "mongoose";
 
@@ -706,14 +706,13 @@ Respond strictly with valid JSON in this format:
 });
 
 async function startServer() {
-  if (process.env.NODE_ENV !== "production") {
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: "spa",
-    });
-    app.use(vite.middlewares);
-  } else {
-    const distPath = path.join(process.cwd(), "dist");
+  const distCandidates = [
+    path.join(process.cwd(), "dist"),
+    path.join(process.cwd(), "..", "frontend", "dist"),
+  ];
+  const distPath = distCandidates.find((dir) => fs.existsSync(path.join(dir, "index.html")));
+
+  if (distPath) {
     app.use(express.static(distPath));
     app.get("*", (req, res) => {
       res.sendFile(path.join(distPath, "index.html"));
@@ -722,7 +721,7 @@ async function startServer() {
 
   if (!process.env.VERCEL) {
     app.listen(PORT, "0.0.0.0", () => {
-      console.log(`Smart AI Resume Analyzer server running on http://0.0.0.0:${PORT}`);
+      console.log(`Smart AI Resume Analyzer API server running on http://0.0.0.0:${PORT}`);
     });
   }
 }
