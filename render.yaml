@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: smart-ai-resume-analyzer-backend
+    runtime: node
+    plan: free
+    rootDir: .
+    buildCommand: npm install && npm run build:backend
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: API_KEY
+        sync: false
+      - key: MONGODB_URI
+        sync: false
+      - key: AI_MODEL
+        value: gemini-3.6-flash
+      - key: NODE_ENV
+        value: production
