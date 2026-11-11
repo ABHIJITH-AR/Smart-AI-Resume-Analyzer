@@ -7,7 +7,13 @@ const STORAGE_KEYS = {
   SAVED_COMPARISONS: 'ai_resume_analyzer_comparisons',
 };
 
-const API_BASE = ((import.meta as any).env?.VITE_API_URL || (import.meta as any).env?.VITE_BACKEND_URL || '').replace(/\/$/, '');
+const RAW_API_BASE = ((import.meta as any).env?.VITE_API_URL || (import.meta as any).env?.VITE_BACKEND_URL || '').replace(/\/$/, '');
+
+const PRODUCTION_API_BASE = 'https://smart-ai-resume-analyzer-vjw3.onrender.com';
+
+const API_BASE = RAW_API_BASE && !RAW_API_BASE.includes('xxxx')
+  ? RAW_API_BASE
+  : ((import.meta as any).env?.PROD ? PRODUCTION_API_BASE : '');
 
 // Local storage helper functions
 export const getStoredUser = (): User | null => {
